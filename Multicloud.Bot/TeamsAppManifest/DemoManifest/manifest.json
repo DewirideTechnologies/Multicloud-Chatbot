@@ -1,0 +1,43 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.14/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.14",
+  "version": "1.0.0",
+  "id": "5e103941-06bd-4e13-a21c-41175051da05",
+  "packageName": "com.dewiride.multicloud",
+  "developer": {
+    "name": "JD Bots",
+    "websiteUrl": "https://www.dewiride.com",
+    "privacyUrl": "https://www.dewiride.com/privacy",
+    "termsOfUseUrl": "https://www.dewiride.com/termsofuser"
+  },
+  "icons": {
+    "outline": "icon-outline.png",
+    "color": "icon-color.png"
+  },
+  "name": {
+    "short": "Multicloud",
+    "full": "Multicloud Bot"
+  },
+  "description": {
+    "short": "This bot allows you to interact with multiple cloud providers.",
+    "full": "This bot allows you to interact with multiple cloud providers."
+  },
+  "accentColor": "#FFFFFF",
+  "bots": [
+    {
+      "botId": "5e103941-06bd-4e13-a21c-41175051da05",
+      "scopes": [
+        "personal"
+      ],
+      "isNotificationOnly": false,
+      "supportsCalling": false,
+      "supportsVideo": false,
+      "supportsFiles": false
+    }
+  ],
+  "permissions": [
+    "identity",
+    "messageTeamMembers"
+  ],
+  "validDomains": [ "*.ngrok.io" ]
+}

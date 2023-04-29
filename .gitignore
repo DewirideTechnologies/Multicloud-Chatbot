@@ -363,3 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 *.Development.json
 /Multicloud.Bot/TeamsAppManifest
+/Multicloud.Bot/TeamsAppManifest/icon-color.png
+/Multicloud.Bot/TeamsAppManifest/icon-outline.png
+/Multicloud.Bot/TeamsAppManifest/manifest.json
+/Multicloud.Bot/TeamsAppManifest/manifest.zip
