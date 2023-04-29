@@ -13,14 +13,14 @@ namespace Multicloud.Bot
 
         public MulticloudRecognizer(IConfiguration configuration)
         {
-            var cluIsConfigured = !string.IsNullOrEmpty(configuration["CluProjectName"]) && !string.IsNullOrEmpty(configuration["CluDeploymentName"]) && !string.IsNullOrEmpty(configuration["CluAPIKey"]) && !string.IsNullOrEmpty(configuration["CluAPIHostName"]);
+            var cluIsConfigured = !string.IsNullOrEmpty(configuration["Clu:ProjectName"]) && !string.IsNullOrEmpty(configuration["Clu:DeploymentName"]) && !string.IsNullOrEmpty(configuration["Clu:APIKey"]) && !string.IsNullOrEmpty(configuration["Clu:APIHostName"]);
             if (cluIsConfigured)
             {
                 var cluApplication = new CluApplication(
-                    configuration["CluProjectName"],
-                    configuration["CluDeploymentName"],
-                    configuration["CluAPIKey"],
-                    "https://" + configuration["CluAPIHostName"]);
+                    configuration["Clu:ProjectName"],
+                    configuration["Clu:DeploymentName"],
+                    configuration["Clu:APIKey"],
+                    "https://" + configuration["Clu:APIHostName"]);
                 var recognizerOptions = new CluOptions(cluApplication) { Language = "en" };
 
                 _recognizer = new CluRecognizer(recognizerOptions);
