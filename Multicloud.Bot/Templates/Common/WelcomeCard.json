@@ -33,7 +33,7 @@
     },
     {
       "type": "TextBlock",
-      "text": "Hi ${Username}! Welcome, how can I help you today?",
+      "text": "Hi ${Username}! Welcome, I'm the Multicloud bot. I can help you with a variety of things. Try asking me to 'show me my resources' or 'show me my resource groups'.",
       "wrap": true,
       "weight": "Bolder"
     },

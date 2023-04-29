@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Bot.Builder" Version="4.19.3" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.19.3" />
     <PackageReference Include="Microsoft.Bot.Schema" Version="4.19.3" />
   </ItemGroup>
 

@@ -12,6 +12,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Bot.Schema.Teams;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Multicloud.Interfaces;
 using Multicloud.Interfaces.AzureStorage;
 using Multicloud.Services.Cards;
 using Newtonsoft.Json;
@@ -23,12 +24,14 @@ namespace Multicloud.Bot.Bots
     {
         private readonly IAzureTableService _azureTableService;
         private readonly IConfiguration _configuration;
+        private readonly IUtilityService _utilityService;
 
-        public DialogAndWelcomeBot(ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger, IAzureTableService azureTableService, IConfiguration configuration)
+        public DialogAndWelcomeBot(ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger, IAzureTableService azureTableService, IConfiguration configuration, IUtilityService utilityService)
             : base(conversationState, userState, dialog, logger)
         {
             _azureTableService = azureTableService;
             _configuration = configuration;
+            _utilityService = utilityService;
         }
 
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
@@ -42,20 +45,7 @@ namespace Multicloud.Bot.Bots
                     // store teams user details in Azure Table Storage
                     await _azureTableService.StoreUserDetailsAsync(turnContext, cancellationToken);
 
-					// get the teams user details
-					TeamsChannelAccount teamsUser = await TeamsInfo.GetMemberAsync(turnContext, turnContext.Activity.From.Id, cancellationToken);
-
-					var paths = new[] { ".", "Templates", "Common", "WelcomeCard.json" };
-
-					object dataJson = new
-                    {
-						LogoUrl = _configuration["HostName"]+@"/images/logo/logo.png",
-						Username = teamsUser.Name
-					};
-
-					var welcomeCard = CardsService.CreateAdaptiveCardAttachment(paths, dataJson);
-                    var response = MessageFactory.Attachment(welcomeCard, ssml: "Welcome to Multicloud!");
-                    await turnContext.SendActivityAsync(response, cancellationToken);
+				    await _utilityService.SendWelcomeCardAsync(turnContext, cancellationToken);
                     await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
                 }
             }

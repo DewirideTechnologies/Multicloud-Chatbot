@@ -12,6 +12,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 using Multicloud.Bot.Clu;
+using Multicloud.Interfaces;
 
 namespace Multicloud.Bot.Dialogs
 {
@@ -19,13 +20,15 @@ namespace Multicloud.Bot.Dialogs
     {
         protected readonly ILogger Logger;
         private readonly MulticloudRecognizer _cluRecognizer;
+        private readonly IUtilityService _utilityService;
 
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(MulticloudRecognizer cluRecognizer, ILogger<MainDialog> logger)
+        public MainDialog(MulticloudRecognizer cluRecognizer, ILogger<MainDialog> logger, IUtilityService utilityService)
             : base(nameof(MainDialog))
         {
             _cluRecognizer = cluRecognizer;
             Logger = logger;
+            _utilityService = utilityService;
 
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
@@ -59,9 +62,7 @@ namespace Multicloud.Bot.Dialogs
             switch (cluResult.GetTopIntent().intent)
             {
                 case Clu.Multicloud.Intent.Greeting:
-                    var greetingMessageText = $"Hi there! I'm the Multicloud bot. I can help you with a variety of things. Try asking me to 'show me my resources' or 'show me my resource groups'.";
-                    var greetingMessage = MessageFactory.Text(greetingMessageText, greetingMessageText, InputHints.IgnoringInput);
-                    await stepContext.Context.SendActivityAsync(greetingMessage, cancellationToken);
+                    await _utilityService.SendWelcomeCardAsync(stepContext, cancellationToken);
                     break;
 
                 default:

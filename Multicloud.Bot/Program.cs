@@ -15,6 +15,8 @@ using Multicloud.Bot.Dialogs;
 using Multicloud.Bot.Bots;
 using Multicloud.Interfaces.AzureStorage;
 using Multicloud.Services.AzureStorage;
+using Multicloud.Interfaces;
+using Multicloud.Bot.Utility;
 
 namespace Multicloud.Bot
 {
@@ -75,6 +77,7 @@ namespace Multicloud.Bot
 
 			// Services
 			builder.Services.AddSingleton<IAzureTableService, AzureTableService>();
+			builder.Services.AddSingleton<IUtilityService, UtilityService>();
 
 			var app = builder.Build();
 
