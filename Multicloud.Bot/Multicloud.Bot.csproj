@@ -1,18 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <UserSecretsId>c0d0dd9a-30e8-4828-881c-2a3a90547eef</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == '.NET Core' " />
   <ItemGroup>
-    <Content Remove="Cards\welcomeCard.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Cards\welcomeCard.json" />
+    <Content Remove="Templates\Common\WelcomeCard.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,8 +23,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Multicloud.Interfaces\Multicloud.Interfaces.csproj" />
+    <ProjectReference Include="..\Multicloud.Services\Multicloud.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\images\logo\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Templates\Common\WelcomeCard.json" />
   </ItemGroup>
 </Project>

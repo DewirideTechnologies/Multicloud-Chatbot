@@ -7,8 +7,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Teams;
 using Microsoft.Bot.Schema;
+using Microsoft.Bot.Schema.Teams;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Multicloud.Interfaces.AzureStorage;
+using Multicloud.Services.Cards;
 using Newtonsoft.Json;
 
 namespace Multicloud.Bot.Bots
@@ -16,9 +21,14 @@ namespace Multicloud.Bot.Bots
     public class DialogAndWelcomeBot<T> : DialogBot<T>
         where T : Dialog
     {
-        public DialogAndWelcomeBot(ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger)
+        private readonly IAzureTableService _azureTableService;
+        private readonly IConfiguration _configuration;
+
+        public DialogAndWelcomeBot(ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger, IAzureTableService azureTableService, IConfiguration configuration)
             : base(conversationState, userState, dialog, logger)
         {
+            _azureTableService = azureTableService;
+            _configuration = configuration;
         }
 
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
@@ -29,29 +39,24 @@ namespace Multicloud.Bot.Bots
                 // To learn more about Adaptive Cards, see https://aka.ms/msbot-adaptivecards for more details.
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
-                    var welcomeCard = CreateAdaptiveCardAttachment();
-                    var response = MessageFactory.Attachment(welcomeCard, ssml: "Welcome to Bot Framework!");
+                    // store teams user details in Azure Table Storage
+                    await _azureTableService.StoreUserDetailsAsync(turnContext, cancellationToken);
+
+					// get the teams user details
+					TeamsChannelAccount teamsUser = await TeamsInfo.GetMemberAsync(turnContext, turnContext.Activity.From.Id, cancellationToken);
+
+					var paths = new[] { ".", "Templates", "Common", "WelcomeCard.json" };
+
+					object dataJson = new
+                    {
+						LogoUrl = _configuration["HostName"]+@"/images/logo/logo.png",
+						Username = teamsUser.Name
+					};
+
+					var welcomeCard = CardsService.CreateAdaptiveCardAttachment(paths, dataJson);
+                    var response = MessageFactory.Attachment(welcomeCard, ssml: "Welcome to Multicloud!");
                     await turnContext.SendActivityAsync(response, cancellationToken);
                     await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
-                }
-            }
-        }
-
-        // Load attachment from embedded resource.
-        private Attachment CreateAdaptiveCardAttachment()
-        {
-            var cardResourcePath = "Multicloud.Bot.Cards.welcomeCard.json";
-
-            using (var stream = GetType().Assembly.GetManifestResourceStream(cardResourcePath))
-            {
-                using (var reader = new StreamReader(stream))
-                {
-                    var adaptiveCard = reader.ReadToEnd();
-                    return new Attachment()
-                    {
-                        ContentType = "application/vnd.microsoft.card.adaptive",
-                        Content = JsonConvert.DeserializeObject(adaptiveCard),
-                    };
                 }
             }
         }

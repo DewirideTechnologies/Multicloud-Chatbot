@@ -13,6 +13,8 @@ using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Builder;
 using Multicloud.Bot.Dialogs;
 using Multicloud.Bot.Bots;
+using Multicloud.Interfaces.AzureStorage;
+using Multicloud.Services.AzureStorage;
 
 namespace Multicloud.Bot
 {
@@ -70,6 +72,9 @@ namespace Multicloud.Bot
 			// Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
 			builder.Services.AddTransient<IBot, DialogAndWelcomeBot<MainDialog>>();
 			//builder.Services.AddSingleton(async x => await RedisConnection.InitializeAsync(connectionString: builder.Configuration["Cache:ConnectionString"]));
+
+			// Services
+			builder.Services.AddSingleton<IAzureTableService, AzureTableService>();
 
 			var app = builder.Build();
 

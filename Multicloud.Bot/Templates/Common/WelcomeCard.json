@@ -1,4 +1,4 @@
-﻿{
+{
   "type": "AdaptiveCard",
   "body": [
     {
@@ -10,7 +10,7 @@
           "items": [
             {
               "type": "TextBlock",
-              "text": "${Title}",
+              "text": "Multicloud",
               "wrap": true,
               "horizontalAlignment": "Left",
               "size": "Large",
@@ -24,7 +24,7 @@
           "items": [
             {
               "type": "Image",
-              "url": "${Logo}",
+              "url": "${LogoUrl}",
               "horizontalAlignment": "Right"
             }
           ]
@@ -46,7 +46,8 @@
         },
         {
           "type": "Action.OpenUrl",
-          "title": "Visit Us"
+          "title": "Visit Us",
+          "url": "https://multi-cloud.in"
         }
       ]
     }
