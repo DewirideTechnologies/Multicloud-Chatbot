@@ -11,6 +11,7 @@ namespace Multicloud.Interfaces
 {
     public interface IUtilityService
     {
+		Task GetCustomQAResponseAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken);
 		Task SendWelcomeCardAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken);
 		Task SendWelcomeCardAsync(ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken);
 	}

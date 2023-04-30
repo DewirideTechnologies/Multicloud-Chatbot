@@ -59,19 +59,23 @@ namespace Multicloud.Bot.Dialogs
         {
             // Call CLU and gather any potential booking details. (Note the TurnContext has the response to the prompt.)
             var cluResult = await _cluRecognizer.RecognizeAsync<Clu.Multicloud>(stepContext.Context, cancellationToken);
-            switch (cluResult.GetTopIntent().intent)
-            {
-                case Clu.Multicloud.Intent.Greeting:
-                    await _utilityService.SendWelcomeCardAsync(stepContext, cancellationToken);
-                    break;
 
-                default:
-                    // Catch all for unhandled intents
-                    var didntUnderstandMessageText = $"Sorry, I didn't get that. Please try asking in a different way (intent was {cluResult.GetTopIntent().intent})";
-                    var didntUnderstandMessage = MessageFactory.Text(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-                    await stepContext.Context.SendActivityAsync(didntUnderstandMessage, cancellationToken);
-                    break;
-            }
+            if (cluResult.GetTopIntent().score > 0.9)
+            {
+				switch (cluResult.GetTopIntent().intent)
+				{
+					case Clu.Multicloud.Intent.Greeting:
+						await _utilityService.SendWelcomeCardAsync(stepContext, cancellationToken);
+						break;
+
+					default:
+						// Catch all for unhandled intents
+						await _utilityService.GetCustomQAResponseAsync(stepContext, cancellationToken);
+						break;
+				}
+			}
+            else
+                await _utilityService.GetCustomQAResponseAsync(stepContext, cancellationToken);
 
             return await stepContext.NextAsync(null, cancellationToken);
         }
