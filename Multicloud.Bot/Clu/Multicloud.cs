@@ -16,6 +16,7 @@ namespace Multicloud.Bot.Clu
     {
         public enum Intent
         {
+            Regions_Read,
             Greeting,
             Cancel,
             None

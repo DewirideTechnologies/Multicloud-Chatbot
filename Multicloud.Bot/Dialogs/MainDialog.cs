@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 using Multicloud.Bot.Clu;
 using Multicloud.Interfaces;
+using Multicloud.Interfaces.AzureStorage;
 
 namespace Multicloud.Bot.Dialogs
 {
@@ -21,14 +22,16 @@ namespace Multicloud.Bot.Dialogs
         protected readonly ILogger Logger;
         private readonly MulticloudRecognizer _cluRecognizer;
         private readonly IUtilityService _utilityService;
+        private readonly IAzureSqlService _azureSqlService;
 
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(MulticloudRecognizer cluRecognizer, ILogger<MainDialog> logger, IUtilityService utilityService)
+        public MainDialog(MulticloudRecognizer cluRecognizer, ILogger<MainDialog> logger, IUtilityService utilityService, IAzureSqlService azureSqlService)
             : base(nameof(MainDialog))
         {
             _cluRecognizer = cluRecognizer;
             Logger = logger;
             _utilityService = utilityService;
+            _azureSqlService = azureSqlService;
 
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
@@ -67,6 +70,12 @@ namespace Multicloud.Bot.Dialogs
 					case Clu.Multicloud.Intent.Greeting:
 						await _utilityService.SendWelcomeCardAsync(stepContext, cancellationToken);
 						break;
+
+                    case Clu.Multicloud.Intent.Regions_Read:
+                        var regions = await _azureSqlService.GetRegionsAsync();
+                        await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Here are the regions I found:"), cancellationToken);
+                        await stepContext.Context.SendActivityAsync(MessageFactory.Text($"{string.Join(", ", regions.Select(x => x.Name))}"), cancellationToken);
+                        break;
 
 					default:
 						// Catch all for unhandled intents

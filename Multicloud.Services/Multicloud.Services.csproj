@@ -10,10 +10,11 @@
     <PackageReference Include="AdaptiveCards.Templating" Version="1.4.0" />
     <PackageReference Include="Azure.Data.Tables" Version="12.8.0" />
     <PackageReference Include="Microsoft.Bot.Builder" Version="4.19.3" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.22" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Multicloud.Data\Multicloud.Data.csproj" />
     <ProjectReference Include="..\Multicloud.Interfaces\Multicloud.Interfaces.csproj" />
     <ProjectReference Include="..\Multicloud.Models\Multicloud.Models.csproj" />
   </ItemGroup>

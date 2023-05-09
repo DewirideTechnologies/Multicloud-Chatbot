@@ -12,4 +12,8 @@
     <PackageReference Include="Microsoft.Bot.Schema" Version="4.19.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Multicloud.Data\Multicloud.Data.csproj" />
+  </ItemGroup>
+
 </Project>

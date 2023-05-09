@@ -18,12 +18,18 @@
     <PackageReference Include="Microsoft.Bot.Builder.AI.QnA" Version="4.19.3" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.19.3" />
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.19.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="6.0.0" />
     <PackageReference Include="Microsoft.Recognizers.Text.DataTypes.TimexExpression" Version="1.8.6" />
     <PackageReference Include="Azure.AI.Language.Conversations" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Multicloud.Data\Multicloud.Data.csproj" />
     <ProjectReference Include="..\Multicloud.Interfaces\Multicloud.Interfaces.csproj" />
     <ProjectReference Include="..\Multicloud.Services\Multicloud.Services.csproj" />
   </ItemGroup>

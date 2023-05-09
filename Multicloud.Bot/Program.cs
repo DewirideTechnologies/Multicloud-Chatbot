@@ -78,6 +78,7 @@ namespace Multicloud.Bot
 			// Services
 			builder.Services.AddSingleton<IAzureTableService, AzureTableService>();
 			builder.Services.AddSingleton<IUtilityService, UtilityService>();
+			builder.Services.AddSingleton<IAzureSqlService, AzureSqlService>();
 
 			var app = builder.Build();
 
