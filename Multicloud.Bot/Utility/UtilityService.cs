@@ -10,8 +10,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Multicloud.Interfaces;
 using Multicloud.Services.Cards;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -124,6 +128,38 @@ namespace Multicloud.Bot.Utility
 			await turnContext.SendActivityAsync(response, cancellationToken);
 		}
 
+        public async Task GetChatGPTResponse(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+			string message = await GetGPTResponse(stepContext.Context.Activity.Text);
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text(message), cancellationToken);
+        }
 
-	}
+        private async Task<string> GetGPTResponse(string text)
+        {
+            // call an api with a POST request and json body with headers
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(_configuration["OpenAI:APIEndpoint"]);
+            client.DefaultRequestHeaders.Accept.Clear();
+
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + _configuration["OpenAI:APIKey"]);
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, client.BaseAddress);
+
+            request.Content = new StringContent($"{{\"model\": \"{_configuration["OpenAI:Model"]}\",\"messages\": [{{\"role\": \"system\",\"content\": \"You are an Q&A assistant.\\n- Follow the questions asked carefully\\n- You must only answer the questions if they fall under the category - {_configuration["OpenAI:QnACategory"]}.\\n- If the question asked does not fall under this category, respond with - \\\"I do not have answer to this question. Please rephrase\\\".\\n- If the questions asked fall under the above category, answer them.\\n- You must never answer any questions if they do not fall under the category. For these questions, above must be the response.\"}},{{\"role\": \"user\", \"content\": \"{text}\"}}]}}", Encoding.UTF8, "application/json");
+            var response = await client.SendAsync(request).ConfigureAwait(false);
+            var responseString = string.Empty;
+            try
+            {
+                response.EnsureSuccessStatusCode();
+                responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var responseJson = JObject.Parse(responseString);
+                return responseJson["choices"][0]["message"]["content"].ToString();
+            }
+            catch (HttpRequestException ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+                return null;
+            }
+        }
+    }
 }

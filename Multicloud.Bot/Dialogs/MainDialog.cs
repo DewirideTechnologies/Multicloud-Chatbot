@@ -84,7 +84,7 @@ namespace Multicloud.Bot.Dialogs
 				}
 			}
             else
-                await _utilityService.GetCustomQAResponseAsync(stepContext, cancellationToken);
+                await _utilityService.GetChatGPTResponse(stepContext, cancellationToken);
 
             return await stepContext.NextAsync(null, cancellationToken);
         }
